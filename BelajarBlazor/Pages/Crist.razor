@@ -1,0 +1,20 @@
+﻿<h3>Crist</h3>
+
+<p>
+    @Hola @Holi
+</p>
+
+<div>
+    @ChildContent
+</div>
+
+@code {
+    [Parameter]
+    public string Hola { set; get; }
+
+    [Parameter]
+    public string Holi { set; get; }
+
+    [Parameter]
+    public RenderFragment ChildContent { set; get; }
+}

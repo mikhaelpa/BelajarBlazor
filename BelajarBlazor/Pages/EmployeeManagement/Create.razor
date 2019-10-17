@@ -1,0 +1,62 @@
+﻿@page "/employee/create"
+@attribute [Authorize]
+
+<h3>Create New Employee</h3>
+
+<p>
+    <a href="/employee">Return to Index</a>
+</p>
+
+@if (SuccessMessage != null)
+{
+    <div class="alert alert-success">
+        @SuccessMessage
+    </div>
+}
+
+<CreateEditForm @bind-Form="Form" Disabled="Submitting" OnSubmit="OnFormSubmit"></CreateEditForm>
+
+@inject ILogger<Create> Logger
+@inject BelajarDbContext DB
+@code {
+    EmployeeCreateFormModel Form = new EmployeeCreateFormModel();
+
+    string SuccessMessage { set; get; }
+
+    bool Submitting { set; get; }
+
+    async Task OnFormSubmit()
+    {
+        SuccessMessage = null;
+        Submitting = true;
+        StateHasChanged();
+        //await Task.Yield();
+
+        //throw new Exception("UP");
+
+        try
+        {
+            var e = new Employee
+            {
+                EmployeeId = Guid.NewGuid(),
+                FullName = Form.Name
+            };
+
+            DB.Employee.Add(e);
+            await Task.Delay(3000); // NOT SAFE FOR WORK
+            await DB.SaveChangesAsync();
+
+            Form = new EmployeeCreateFormModel();
+            SuccessMessage = "Successfully created new Employee: " + e.FullName;
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(new EventId(101), ex, "Failed to save Employee data.");
+            // this.ErrorMessage = "ERROR WOI";
+        }
+        finally
+        {
+            Submitting = false;
+        }
+    }
+}

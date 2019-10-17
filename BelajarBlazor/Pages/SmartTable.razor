@@ -1,0 +1,26 @@
+﻿@typeparam TItem
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            @TableHeader
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Items)
+        {
+            @TableBodyTemplate(item)
+        }
+    </tbody>
+</table>
+
+@code {
+    [Parameter]
+    public RenderFragment TableHeader { set; get; }
+
+    [Parameter]
+    public RenderFragment<TItem> TableBodyTemplate { set; get; }
+
+    [Parameter]
+    public List<TItem> Items { set; get; }
+}

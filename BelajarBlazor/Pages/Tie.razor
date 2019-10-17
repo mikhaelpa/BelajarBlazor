@@ -1,0 +1,66 @@
+﻿@page "/tie"
+@page "/tie/{id:int}"
+
+@if (ID == 10)@*Atau biasanya tuh data == null pas dicek ke DB :)*@
+{
+    <NotFound></NotFound>
+}
+else
+{
+    <h3>Halo Tie</h3>
+    <Crist Hola="Hello" Holi="Eko">
+        What the helllllll
+    </Crist>
+    <Crist Hola="Hello" Holi="Tie"></Crist>
+    <div>
+        @for (var i = 0; i < 5; i++)
+        {
+            <div @key="i">@i</div>
+        }
+        @foreach (var i in Ints)
+        {
+            <div @key="i">@i</div>
+        }
+    </div>
+}
+
+@using BelajarBlazor.Entities
+@inject BelajarDbContext DB
+@implements IDisposable
+@code {
+    [Parameter]
+    public int ID { set; get; }
+
+    public List<int> Ints { set; get; } = new List<int>();
+
+    /// <summary>
+    /// Kalo component dipanggil, butuh melakukan sesuatu...
+    /// Pasti dipake 100000000x
+    /// </summary>
+    /// <returns></returns>
+    override protected async Task OnInitializedAsync()
+    {
+        this.Ints.Add(1);
+        this.Ints.Add(2);
+        this.Ints.Add(3);
+        await Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// Kalo component dihilangkan dari halaman...
+    /// Kayaknya nggak terlalu kepake :)
+    /// </summary>
+    public void Dispose()
+    {
+
+    }
+
+    public void OnSubmit()
+    {
+        // busy = true
+        StateHasChanged();
+
+        // do something...
+        // busy = false
+    }
+}

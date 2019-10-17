@@ -1,0 +1,16 @@
+﻿<Router AppAssembly="@typeof(Program).Assembly">
+    <Found Context="routeData">
+        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+            <NotAuthorized>
+                <BelajarBlazor.Pages.Challenge></BelajarBlazor.Pages.Challenge>
+            </NotAuthorized>
+        </AuthorizeRouteView>
+    </Found>
+    <NotFound>
+        <CascadingAuthenticationState>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <BelajarBlazor.Pages.NotFound></BelajarBlazor.Pages.NotFound>
+            </LayoutView>
+        </CascadingAuthenticationState>
+    </NotFound>
+</Router>

@@ -1,0 +1,25 @@
+﻿@if (User.Identity.IsAuthenticated)
+{
+    <h1>You are not allowed to access this page.</h1>
+} else
+{
+    <h1>Redirecting...</h1>
+}
+
+@inject NavigationManager Nav
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    private System.Security.Claims.ClaimsPrincipal User { set; get; }
+
+    override protected async Task OnInitializedAsync()
+    {
+        this.User = (await AuthenticationStateTask).User;
+
+        if (User.Identity.IsAuthenticated == false)
+        {
+            Nav.NavigateTo("/login?redirectTo=" + Nav.Uri, true);
+        }
+    }
+}

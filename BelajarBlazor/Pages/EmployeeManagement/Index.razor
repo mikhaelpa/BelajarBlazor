@@ -1,0 +1,49 @@
+﻿@page "/employee"
+@attribute [Authorize]
+
+<h3>Employee Index</h3>
+
+<p>
+    <a href="/employee/create" class="btn btn-primary">Create New Employee</a>
+</p>
+
+@*@if (SuccessMessage != null)
+{
+    <div class="alert alert-success">
+        @SuccessMessage
+    </div>
+}*@
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Employee ID</th>
+            <th>Full Name</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var employee in Employees)
+        {
+            <tr>
+                <td>@employee.EmployeeId</td>
+                <td>@employee.FullName</td>
+                <td>
+                    <a href="/employee/edit/@(employee.EmployeeId)">Edit</a>
+                    |
+                    <a href="#">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@inject BelajarDbContext DB
+@code {
+    List<Employee> Employees = new List<Employee>();
+
+    override protected async Task OnInitializedAsync()
+    {
+        Employees = await DB.Employee.AsNoTracking().ToListAsync();
+    }
+}

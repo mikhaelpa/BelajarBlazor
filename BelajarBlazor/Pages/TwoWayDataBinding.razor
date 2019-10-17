@@ -1,0 +1,21 @@
+﻿<h3>TwoWayDataBinding</h3>
+
+<p>
+    <input value="@Value" @onchange="OnValueChanged" />
+    Child: @Value
+</p>
+
+@code {
+    [Parameter]
+    public string Value { set; get; }
+
+    [Parameter]
+    public EventCallback<string> ValueChanged { set; get; }
+
+    async Task OnValueChanged(ChangeEventArgs e)
+    {
+        var newValue = e.Value?.ToString();
+        Value = newValue;
+        await ValueChanged.InvokeAsync(newValue);
+    }
+}

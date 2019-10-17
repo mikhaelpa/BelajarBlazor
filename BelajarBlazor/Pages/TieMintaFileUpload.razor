@@ -1,0 +1,74 @@
+﻿@page "/tie2"
+@implements IDisposable
+
+<h3>TieMintaFileUpload</h3>
+
+<p>
+    @FileName
+    @ContentType
+</p>
+
+<p>
+    <InputFile OnChange="HandleFileSelected" accept=".png,.jpg,.jpeg,.bmp"></InputFile>
+</p>
+
+<p>
+    <DateRangePicker @bind-StartDate="StartDate" SingleDatePicker="true" />
+    @StartDate
+</p>
+
+<p>
+    <button class="btn btn-primary" type="button" @onclick="OnFormSubmit">Submit</button>
+</p>
+
+@using System.IO;
+@code {
+    public string FileName { set; get; }
+
+    public string ContentType { set; get; }
+
+    public DateTimeOffset? StartDate { set; get; }
+
+    async Task HandleFileSelected(IFileListEntry[] files)
+    {
+        var file = files.FirstOrDefault();
+        if (file == null)
+        {
+            return;
+        }
+
+        if (FileName != null)
+        {
+            // delete temporary file lama biar gak bikin kotor...
+            File.Delete(FileName);
+        }
+
+        // mau pake temp, mau nggak pake temp, terserah sih
+        Directory.CreateDirectory("/belajar-blazor/tmp/");
+        FileName = "/belajar-blazor/tmp/" + Path.GetRandomFileName();
+        using (var fs = File.Open(FileName, FileMode.Create))
+        {
+            await file.Data.CopyToAsync(fs);
+        }
+        ContentType = file.Type;
+    }
+
+    async Task OnFormSubmit()
+    {
+        var blobId = Guid.NewGuid();
+        Directory.CreateDirectory("/belajar-blazor/blob/");
+        var blobPath = "/belajar-blazor/blob/" + blobId;
+        File.Move(FileName, blobPath);
+        // masukin blob ID ke db...
+        // masukin content type ke db...
+        FileName = null;
+    }
+
+    public void Dispose()
+    {
+        if (FileName != null)
+        {
+            File.Delete(FileName);
+        }
+    }
+}

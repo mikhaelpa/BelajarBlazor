@@ -1,0 +1,17 @@
+﻿@inherits CreateEditFormBase
+
+<EditForm Model="Form" OnValidSubmit="OnFormSubmit">
+    @*<DataAnnotationsValidator></DataAnnotationsValidator>*@
+    <FluentValidation.FluentValidator></FluentValidation.FluentValidator>
+    <fieldset disabled="@Disabled">
+        <div class="form-group">
+            <label for="name">Name</label>
+            <InputText id="name" class="form-control" @bind-Value="Form.Name"></InputText>
+            <ValidationMessage For="() => Form.Name"></ValidationMessage>
+        </div>
+        <div class="form-group">
+            <ValidationSummary></ValidationSummary>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </fieldset>
+</EditForm>

@@ -1,0 +1,67 @@
+﻿@page "/employee/edit/{id:guid}"
+@attribute [Authorize]
+
+@if (PageNotFound)
+{
+    <NotFound></NotFound>
+}
+else
+{
+    <h3>Edit Employee Data</h3>
+
+    <p>
+        <a href="/employee">Return to Index</a>
+    </p>
+
+    @if (SuccessMessage != null)
+    {
+        <div class="alert alert-success">
+            @SuccessMessage
+        </div>
+    }
+
+    <CreateEditForm @bind-Form="Form" Disabled="Submitting" OnSubmit="OnSubmit"></CreateEditForm>
+}
+
+@inject BelajarDbContext DB
+@code {
+    [Parameter]
+    public Guid ID { set; get; }
+
+    public EmployeeCreateFormModel Form = new EmployeeCreateFormModel();
+
+    public Employee Editing { set; get; }
+
+    public bool Submitting { set; get; }
+
+    public bool PageNotFound { set; get; }
+
+    public string SuccessMessage { set; get; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.Editing = await DB.Employee.Where(Q => Q.EmployeeId == ID).FirstOrDefaultAsync();
+        if (Editing == null)
+        {
+            PageNotFound = true;
+        }
+
+        this.Form = new EmployeeCreateFormModel
+        {
+            Name = Editing.FullName
+        };
+    }
+
+    public async Task OnSubmit()
+    {
+        SuccessMessage = null;
+        Submitting = true;
+        StateHasChanged();
+
+        Editing.FullName = Form.Name;
+        await Task.Delay(3000); // DON'T DO THIS AT HOME
+        await DB.SaveChangesAsync();
+        Submitting = false;
+        SuccessMessage = "Successfully edited employee data.";
+    }
+}

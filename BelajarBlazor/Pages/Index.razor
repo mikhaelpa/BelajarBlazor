@@ -1,0 +1,77 @@
+﻿@page "/"
+
+<h1>Hello, world!</h1>
+
+<CristAlmighty.Crist></CristAlmighty.Crist>
+
+<TwoWayDataBinding @bind-Value="Test"></TwoWayDataBinding>
+
+<p>
+    Parent: @Test
+</p>
+
+<p>
+    <a href="/tie">Go to Tie</a>
+</p>
+
+<p>
+    @Counter
+</p>
+
+<p>
+    <button disabled="@Nani" type="button" @onclick="OnClickMe">Click Me</button>
+    <button type="button" @onclick="e => { this.Counter--; Nani = true; }">Click Me?</button>
+    <button type="button" @onclick="RunInstapackHello">Hello</button>
+</p>
+
+<p>
+    <input value="@Value" @oninput="e => { Value = e.Value.ToString(); }" />
+    @Value
+</p>
+
+<div>
+    <SmartTable Items="Employees">
+        <TableHeader>
+            <th>Employee ID</th>
+            <th>Full Name</th>
+        </TableHeader>
+        <TableBodyTemplate>
+            <td>@context.EmployeeId</td>
+            <td>@context.FullName</td>
+        </TableBodyTemplate>
+    </SmartTable>
+</div>
+
+Welcome to your new app.
+
+@inject IJSRuntime JS
+@code{
+    List<Entities.Employee> Employees = new List<Entities.Employee>();
+
+    int Counter { set; get; }
+
+    string Value { set; get; }
+
+    string Test { set; get; } = "Value";
+
+    override protected void OnInitialized()
+    {
+        this.Employees.Add(new Entities.Employee
+        {
+            EmployeeId = Guid.NewGuid(),
+            FullName = "Ryan"
+        });
+    }
+
+    bool Nani { set; get; }
+
+    void OnClickMe()
+    {
+        this.Counter++;
+    }
+
+    async Task RunInstapackHello()
+    {
+        var balikan = await JS.InvokeAsync<string>("instapack.hello", "Tie Tie");
+    }
+}
